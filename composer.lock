@@ -1,9 +1,35 @@
 {
-    "hash": "2265fe393e25eaf0de856317998344d4",
+    "hash": "9b3f14b580456c1734d6f9e22f156f43",
     "packages": [
         {
-            "package": "pear-pear.apache.org/log4php/Apache_log4php",
-            "version": "2.2.1"
+            "name": "apache/log4php",
+            "version": "2.3.0",
+            "source": {
+                "type": "svn",
+                "url": "https://svn.apache.org/repos/asf/logging/log4php",
+                "reference": "/tags/2.3.0/@1402452"
+            },
+            "require": {
+                "php": ">=5.2.7"
+            },
+            "time": "2012-10-26 11:13:25",
+            "type": "library",
+            "installation-source": "source",
+            "autoload": {
+                "classmap": [
+                    "src/main/php/"
+                ]
+            },
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "A versatile logging framework for PHP",
+            "homepage": "http://logging.apache.org/log4php/",
+            "keywords": [
+                "log",
+                "logging",
+                "php"
+            ]
         }
     ],
     "packages-dev": null,
