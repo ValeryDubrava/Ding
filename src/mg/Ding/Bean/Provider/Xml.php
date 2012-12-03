@@ -29,6 +29,7 @@
 namespace Ding\Bean\Provider;
 
 use Ding\Reflection\IReflectionFactory;
+use SimpleXMLElement;
 use Ding\Reflection\IReflectionFactoryAware;
 use Ding\Logger\ILoggerAware;
 use Ding\Container\IContainerAware;
@@ -37,7 +38,6 @@ use Ding\Bean\IBeanDefinitionProvider;
 use Ding\Bean\Lifecycle\IAfterConfigListener;
 use Ding\Container\IContainer;
 use Ding\Aspect\PointcutDefinition;
-use Ding\Bean\Lifecycle\AfterConfigListener;
 use Ding\Bean\Factory\Exception\BeanFactoryException;
 use Ding\Bean\BeanConstructorArgumentDefinition;
 use Ding\Bean\BeanDefinition;
@@ -64,10 +64,13 @@ class Xml implements
     IBeanDefinitionProvider, IAspectManagerAware, IContainerAware, ILoggerAware,
     IReflectionFactoryAware
 {
+    /**
+     * @var IContainer
+     */
     protected $container;
     /**
      * log4php logger or our own.
-     * @var Logger
+     * @var \Logger
      */
     private $_logger;
 
@@ -79,7 +82,7 @@ class Xml implements
 
     /**
      * SimpleXML object.
-     * @var SimpleXML[]
+     * @var SimpleXMLElement[]
      */
     private $_simpleXml;
 
@@ -125,6 +128,7 @@ class Xml implements
      */
     private $_directories = false;
     private $_knownBeansPerEvent = array();
+    private $_knownBeansByClass = array();
     /**
      * @var IReflectionFactory
      */
@@ -164,7 +168,7 @@ class Xml implements
      * @param string $filename
      *
      * @throws BeanFactoryException
-     * @return SimpleXML
+     * @return SimpleXMLElement[]
      */
     private function _loadXml($filename)
     {
@@ -192,6 +196,7 @@ class Xml implements
         if ($contents === false) {
             throw new BeanFactoryException($filename . ' not found in ' . print_r($this->_directories, true));
         }
+        /** @var $ret SimpleXMLElement */
         $ret = simplexml_load_string($contents);
         if ($ret === false) {
             return $ret;
@@ -209,7 +214,7 @@ class Xml implements
     /**
      * Returns an aspect definition.
      *
-     * @param SimpleXML $simpleXmlAspect Aspect node.
+     * @param SimpleXMLElement $simpleXmlAspect Aspect node.
      *
      * @throws BeanFactoryException
      * @return AspectDefinition
@@ -263,7 +268,7 @@ class Xml implements
     /**
      * Returns a property definition.
      *
-     * @param SimpleXML $simpleXmlProperty Property node.
+     * @param SimpleXMLElement $simpleXmlProperty Property node.
      *
      * @throws BeanFactoryException
      * @return BeanPropertyDefinition
@@ -304,7 +309,7 @@ class Xml implements
             $propValue = (string)$simpleXmlProperty->eval;
         } else {
             $propType = BeanPropertyDefinition::PROPERTY_SIMPLE;
-            $propValue = (string)$simpleXmlProperty->value;
+            $propValue = isset($simpleXmlProperty->{'value'}) ? (string)$simpleXmlProperty->{'value'} : (string) $simpleXmlProperty;
         }
         return new BeanPropertyDefinition($propName, $propType, $propValue);
     }
@@ -312,12 +317,12 @@ class Xml implements
     /**
      * Returns a constructor argument definition.
      *
-     * @param SimpleXML $simpleXmlArg Argument node.
+     * @param SimpleXMLElement $simpleXmlArg Argument node.
      *
      * @throws BeanFactoryException
      * @return BeanConstructorArgumentDefinition
      */
-    private function _loadConstructorArg($simpleXmlArg)
+    private function _loadConstructorArg(SimpleXMLElement $simpleXmlArg)
     {
         if (isset($simpleXmlArg->ref)) {
             $argType = BeanConstructorArgumentDefinition::BEAN_CONSTRUCTOR_BEAN;
@@ -348,7 +353,7 @@ class Xml implements
             $argValue = (string)$simpleXmlArg->eval;
         } else {
             $argType = BeanConstructorArgumentDefinition::BEAN_CONSTRUCTOR_VALUE;
-            $argValue = (string)$simpleXmlArg->value;
+            $argValue = isset($simpleXmlArg->{'value'}) ? (string)$simpleXmlArg->{'value'} : (string) $simpleXmlArg;
         }
         if (isset($simpleXmlArg->attributes()->name)) {
             $argName = (string)$simpleXmlArg->attributes()->name;
@@ -671,10 +676,7 @@ class Xml implements
     /**
      * Constructor.
      *
-     * @param array                      $options
-     * @param \Ding\Aspect\AspectManager $aspectManager
-     *
-     * @return void
+     * @param array $options
      */
     public function __construct(array $options)
     {
