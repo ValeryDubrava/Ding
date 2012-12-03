@@ -52,7 +52,7 @@ class HttpUrlMapper implements IMapper, IContainerAware, ILoggerAware
 {
     /**
      * log4php logger or our own.
-     * @var Logger
+     * @var \Logger
      */
     private $_logger;
 
@@ -60,6 +60,16 @@ class HttpUrlMapper implements IMapper, IContainerAware, ILoggerAware
      * @var Controller[]
      */
     private $_map;
+
+    /**
+     * @var IContainer
+     */
+    private $container;
+
+    /**
+     * @var string
+     */
+    private $defaultAction = 'Main';
 
     /**
      * Used from the Mvc driver to setup annotated controllers.
@@ -114,12 +124,28 @@ class HttpUrlMapper implements IMapper, IContainerAware, ILoggerAware
     }
 
     /**
+     * @param string $defaultAction
+     */
+    public function setDefaultAction($defaultAction)
+    {
+        $this->defaultAction = $defaultAction;
+    }
+
+    /**
+     * Gets the default, which sets if other is not specified.
+     * @return string
+     */
+    public function getDefaultAction()
+    {
+        return $this->defaultAction;
+    }
+
+
+    /**
      * This will map a full url, like /A/B/C to an HttpAction and will try to
      * find a controller that can handle it. This will isolate the baseUrl.
      *
-     * @param Action $action Original action (coming from the frontcontroller,
-     * the full url).
-     *
+     * @param Action $actionObject Original action (coming from the frontcontroller, the full url).
      * @return DispatchInfo
      */
     public function map(Action $actionObject)
@@ -165,7 +191,7 @@ class HttpUrlMapper implements IMapper, IContainerAware, ILoggerAware
             $start = $controllerUrlStart + strlen($controllerUrl);
             $action = substr($url, $start);
             if ($action === false) {
-                $action = 'Main';
+                $action = $this->defaultAction;
             }
             $action = explode('/', $action);
             $action = $action[0];
@@ -193,8 +219,6 @@ class HttpUrlMapper implements IMapper, IContainerAware, ILoggerAware
 
     /**
      * Constructor.
-     *
-     * @return void
      */
     public function __construct()
     {
