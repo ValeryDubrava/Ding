@@ -937,7 +937,7 @@ class ContainerImpl implements IContainer
             $bean->setBeanName($def->getName());
         }
         if ($rClass->implementsInterface('Ding\Logger\ILoggerAware')) {
-            $bean->setLogger(\Logger::getLogger($class));
+            $bean->setLogger(\Logger::getLogger(str_replace('\\', '.', $class)));
         }
         if ($rClass->implementsInterface('Ding\Container\IContainerAware')) {
             $bean->setContainer($this);

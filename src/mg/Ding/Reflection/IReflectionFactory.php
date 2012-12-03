@@ -53,7 +53,7 @@ interface IReflectionFactory
      *
      * @param string $class Class name.
      *
-     * @return Ding\Annotation\Collection
+     * @return \Ding\Annotation\Collection
      */
     public function getClassAnnotations($class);
     /**
@@ -62,7 +62,7 @@ interface IReflectionFactory
      * @param string $class Class name.
      * @param string $method Method name.
      *
-     * @return Ding\Annotation\Collection
+     * @return \Ding\Annotation\Collection
      */
     public function getMethodAnnotations($class, $method);
     /**
@@ -71,7 +71,7 @@ interface IReflectionFactory
      * @param string $class Class name.
      * @param string $property Property name.
      *
-     * @return Ding\Annotation\Collection
+     * @return \Ding\Annotation\Collection
      */
     public function getPropertyAnnotations($class, $property);
     /**
@@ -79,8 +79,8 @@ interface IReflectionFactory
      *
      * @param string $class Class name
      *
-     * @throws ReflectionException
-     * @return ReflectionClass
+     * @throws \ReflectionException
+     * @return \ReflectionClass
      */
     public function getClass($class);
     /**
@@ -89,8 +89,8 @@ interface IReflectionFactory
      * @param string $class  Class name.
      * @param string $method Method name.
      *
-     * @throws ReflectionException
-     * @return ReflectionMethod
+     * @throws \ReflectionException
+     * @return \ReflectionMethod
      */
     public function getMethod($class, $method);
     /**
@@ -99,8 +99,8 @@ interface IReflectionFactory
      * @param string $class  Class name.
      * @param string $property Property name.
      *
-     * @throws ReflectionException
-     * @return ReflectionProperty
+     * @throws \ReflectionException
+     * @return \ReflectionProperty
      */
     public function getProperty($class, $property);
 

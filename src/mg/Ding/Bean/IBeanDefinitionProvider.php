@@ -26,7 +26,6 @@
  *
  */
 namespace Ding\Bean;
-use Ding\Bean\BeanDefinition;
 
 /**
  * Bean Definition Provider interface.
@@ -61,7 +60,7 @@ interface IBeanDefinitionProvider
      *
      * @param string $name Name of the bean.
      *
-     * @return Ding\Bean\BeanDefinition
+     * @return BeanDefinition
      */
     public function getBeanDefinition($name);
 
