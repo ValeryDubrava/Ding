@@ -728,6 +728,9 @@ class ContainerImpl implements IContainer
      */
     public function getBean($name)
     {
+        if (empty($name)) {
+            throw new BeanFactoryException("Name of bean can not be empty or null");
+        }
         $ret = false;
         $beanDefinition = $this->getBeanDefinition($name);
         $beanName = $name . '.bean';
