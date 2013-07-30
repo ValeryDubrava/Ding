@@ -1068,7 +1068,7 @@ class ContainerImpl implements IContainer
         self::$_options = array_replace_recursive(self::$_options, $options);
         $this->registerProperties(self::$_options['properties']);
         $sapi = php_sapi_name();
-        if ($sapi == 'cgi' || $sapi == 'cli') {
+        if (function_exists('pcntl_signal') && ($sapi == 'cgi' || $sapi == 'cli')) {
             $signals = array(
                 SIGQUIT, SIGHUP, SIGINT, SIGCHLD, SIGTERM, SIGUSR1, SIGUSR2
             );
